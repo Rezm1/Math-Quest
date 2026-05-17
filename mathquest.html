@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Math Quest 🎮</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --PRIMARY: #7C3AED;
+  --PRIMARY-DARK: #5B21B6;
+  --PRIMARY-LIGHT: #A78BFA;
+  --ACCENT: #F59E0B;
+  --BG: #0D0B1E;
+  --CARD: #1A1535;
+  --CARD2: #221D45;
+  --TEXT: #F9FAFB;
+  --TEXT2: #C4B5FD;
+  --TEXT3: #7C6FAD;
+  --SUCCESS: #10B981;
+  --ERROR: #EF4444;
+  --WARNING: #F59E0B;
+  --BORDER: #2D2660;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--BG);
+  color: var(--TEXT);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background: var(--BG);
+}
+
+/* NAVIGATION */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 60px;
+  background: var(--CARD);
+  border-top: 1px solid var(--BORDER);
+  display: flex;
+  z-index: 100;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--TEXT3);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  transition: color 0.2s;
+  padding-top: 4px;
+}
+
+.tab-btn.active { color: var(--PRIMARY-LIGHT); }
+.tab-btn .material-icons { font-size: 22px; }
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+.screen-content {
+  padding: 16px 20px;
+  padding-bottom: 80px;
+  padding-top: 60px;
+}
+
+/* HEADER */
+.screen-header {
+  position: sticky;
+  top: 0;
+  background: var(--BG);
+  z-index: 50;
+  padding: 16px 20px 12px;
+}
+
+/* CARDS */
+.card {
+  background: var(--CARD);
+  border: 1px solid var(--BORDER);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+/* BUTTONS */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  border-radius: 14px;
+  transition: all 0.15s;
+  width: 100%;
+  padding: 16px;
+  font-size: 15px;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--PRIMARY);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--CARD);
+  color: var(--TEXT2);
+  border: 1px solid var(--BORDER);
+}
+
+/* PROGRESS BAR */
+.xp-bar-wrap { width: 100%; }
+.xp-bar-labels { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.xp-bar-track {
+  height: 8px;
+  background: var(--BORDER);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.xp-bar-fill {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* TOPIC ROW */
+.topic-row {
+  background: var(--CARD);
+  border: 1px solid var(--BORDER);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.topic-row:active { transform: scale(0.98); }
+
+.topic-icon {
+  width: 42px; height: 42px;
+  border-radius: 21px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.mini-bar-track {
+  height: 4px;
+  background: var(--BORDER);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 3px;
+}
+.mini-bar-fill { height: 4px; border-radius: 2px; }
+
+/* QUIZ OPTION */
+.quiz-option {
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border: 2px solid var(--BORDER);
+  background: var(--CARD);
+  transition: all 0.15s;
+  width: 100%;
+  text-align: left;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.quiz-option:active { transform: scale(0.98); }
+.quiz-option:disabled { cursor: default; }
+
+.opt-letter {
+  width: 30px; height: 30px;
+  border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+  color: var(--TEXT3);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ACHIEVEMENT BADGE */
+.ach-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+  margin: 6px;
+  transition: opacity 0.2s;
+}
+.ach-badge.locked { opacity: 0.4; }
+.ach-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--BORDER);
+  background: var(--CARD2);
+  margin-bottom: 4px;
+}
+.ach-badge.unlocked .ach-icon-wrap {
+  border-color: inherit;
+}
+.ach-badge-name {
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--TEXT3);
+  line-height: 1.2;
+}
+.ach-badge.unlocked .ach-badge-name { color: var(--TEXT); }
+
+/* SEGMENT TABS */
+.seg-tabs {
+  display: flex;
+  background: var(--CARD);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 16px;
+}
+.seg-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--TEXT3);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.seg-tab.active {
+  background: var(--PRIMARY);
+  color: #fff;
+}
+
+/* FEATURED SCROLL */
+.horiz-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 0 20px 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.horiz-scroll::-webkit-scrollbar { display: none; }
+
+.feat-card {
+  background: var(--CARD);
+  border-radius: 18px;
+  padding: 16px;
+  min-width: 140px;
+  max-width: 140px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.feat-card:active { transform: scale(0.96); }
+
+/* QUIZ SCREEN */
+.quiz-header {
+  position: sticky;
+  top: 0;
+  background: var(--BG);
+  z-index: 50;
+  padding: 16px 20px 12px;
+}
+.quiz-content {
+  padding: 0 20px;
+  padding-bottom: 80px;
+}
+
+/* STAT BOX */
+.stat-box {
+  flex: 1;
+  background: var(--CARD);
+  border: 1px solid var(--BORDER);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* LESSON CARD */
+.lesson-step {
+  background: var(--CARD);
+  border: 1px solid var(--BORDER);
+  border-left: 4px solid;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+/* HINT BOX */
+.hint-box {
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.4);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+/* RESULT BOXES */
+.result-correct {
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.35);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.result-wrong {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+/* DIFFICULTY BADGE */
+.diff-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+/* TOPIC QUEST CARD */
+.quest-card {
+  background: var(--CARD);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ANIMATIONS */
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-slide { animation: slideIn 0.3s ease; }
+.animate-pop { animation: popIn 0.4s ease; }
+.animate-shake { animation: shake 0.3s ease; }
+
+/* FINISH SCREEN */
+.finish-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px 100px;
+}
+
+/* SCROLLABLE */
+.scroll-area {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--TEXT3);
+  margin: 16px 0 10px;
+}
+
+.flex-row { display: flex; align-items: center; }
+.flex-1 { flex: 1; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-14 { gap: 14px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-14 { margin-bottom: 14px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+
+/* BACK BTN */
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--TEXT2);
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+  padding: 4px;
+}
+
+/* XP PILL */
+.xp-pill {
+  background: rgba(245,158,11,0.15);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ACCENT);
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="screen-header">
+      <div class="flex-row" style="justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="color:var(--TEXT3);font-size:13px;margin-bottom:2px;">Добро пожаловать!</div>
+          <div style="color:var(--TEXT);font-size:22px;font-weight:800;">Math Quest 🎮</div>
+        </div>
+        <div class="xp-pill" id="home-points-pill">⭐ 0</div>
+      </div>
+    </div>
+    <div class="scroll-area screen-content" style="padding-top:0;">
+      <!-- Level card -->
+      <div class="card mb-20" id="home-level-card">
+        <div class="flex-row gap-14 mb-14">
+          <div id="home-level-badge" style="width:52px;height:52px;border-radius:26px;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:20px;font-weight:900;" id="home-level-num">1</span>
+          </div>
+          <div>
+            <div style="font-size:16px;font-weight:700;" id="home-level-title">Новичок</div>
+            <div style="font-size:12px;color:var(--TEXT2);" id="home-correct-count">0 задач решено правильно</div>
+          </div>
+        </div>
+        <div class="xp-bar-wrap" id="home-xp-bar"></div>
+      </div>
+
+      <!-- Quick play -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:17px;font-weight:800;margin-bottom:14px;padding:0 0;">⚡ Быстрая игра</div>
+        <div class="horiz-scroll" style="padding:0 0 8px;" id="home-featured"></div>
+      </div>
+
+      <!-- Achievements -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:17px;font-weight:800;margin-bottom:14px;">🎯 Достижения</div>
+        <div class="card">
+          <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
+            <div style="font-size:13px;color:var(--TEXT2);" id="home-ach-count">0 из 10 получено</div>
+            <button onclick="switchTab('progress')" style="background:none;border:none;color:var(--PRIMARY-LIGHT);font-size:13px;cursor:pointer;">Все →</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;" id="home-ach-list"></div>
+        </div>
+      </div>
+
+      <!-- All topics -->
+      <div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:14px;">📚 Все темы</div>
+        <div class="section-label">АЛГЕБРА</div>
+        <div id="home-algebra-list"></div>
+        <div class="section-label">ГЕОМЕТРИЯ</div>
+        <div id="home-geo-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPICS SCREEN -->
+  <div class="screen" id="screen-topics">
+    <div class="screen-header">
+      <div style="font-size:22px;font-weight:900;margin-bottom:14px;">🎯 Квесты</div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="setTopicsCat('alg',this)">∑ Алгебра</button>
+        <button class="seg-tab" onclick="setTopicsCat('geo',this)">△ Геометрия</button>
+      </div>
+    </div>
+    <div class="scroll-area screen-content" style="padding-top:0;" id="topics-list"></div>
+  </div>
+
+  <!-- LEARN SCREEN -->
+  <div class="screen" id="screen-learn">
+    <div class="screen-header">
+      <div style="font-size:22px;font-weight:900;margin-bottom:14px;">📖 Теория</div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="setLearnCat('alg',this)">∑ Алгебра</button>
+        <button class="seg-tab" onclick="setLearnCat('geo',this)">△ Геометрия</button>
+      </div>
+    </div>
+    <div class="scroll-area screen-content" style="padding-top:0;" id="learn-list"></div>
+  </div>
+
+  <!-- PROGRESS SCREEN -->
+  <div class="screen" id="screen-progress">
+    <div class="screen-header">
+      <div style="font-size:22px;font-weight:900;">📊 Прогресс</div>
+    </div>
+    <div class="scroll-area screen-content" style="padding-top:0;" id="progress-content"></div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-header" id="quiz-header"></div>
+    <div class="quiz-content" id="quiz-content"></div>
+  </div>
+
+  <!-- LESSON SCREEN -->
+  <div class="screen" id="screen-lesson">
+    <div class="quiz-header" id="lesson-header"></div>
+    <div class="scroll-area quiz-content" id="lesson-content" style="padding-bottom:100px;"></div>
+  </div>
+
+  <!-- TAB BAR -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">
+      <span class="material-icons">home</span>Главная
+    </button>
+    <button class="tab-btn" id="tab-topics" onclick="switchTab('topics')">
+      <span class="material-icons">extension</span>Квесты
+    </button>
+    <button class="tab-btn" id="tab-learn" onclick="switchTab('learn')">
+      <span class="material-icons">menu_book</span>Теория
+    </button>
+    <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')">
+      <span class="material-icons">bar_chart</span>Прогресс
+    </button>
+  </nav>
+</div>
+
+<script>
+// ============== DATA ==============
+const ALGEBRA_TOPICS = [
+  { id: 'alg1', name: 'Линейные уравнения', icon: 'functions', color: '#7C3AED', desc: 'ax + b = c' },
+  { id: 'alg2', name: 'Неравенства', icon: 'trending_up', color: '#2563EB', desc: 'ax + b > c' },
+  { id: 'alg3', name: 'Многочлены', icon: 'show_chart', color: '#059669', desc: 'Степени и многочлены' },
+  { id: 'alg4', name: 'Пропорции', icon: 'compare_arrows', color: '#DC2626', desc: 'Дроби и пропорции' },
+  { id: 'alg5', name: 'Проценты', icon: 'percent', color: '#D97706', desc: 'Задачи на проценты' },
+  { id: 'alg6', name: 'Функции', icon: 'timeline', color: '#7C3AED', desc: 'y = kx + b' },
+];
+const GEOMETRY_TOPICS = [
+  { id: 'geo1', name: 'Треугольники', icon: 'change_history', color: '#0891B2', desc: 'Виды и свойства' },
+  { id: 'geo2', name: 'Углы', icon: 'rotate_right', color: '#7C3AED', desc: 'Смежные, вертикальные' },
+  { id: 'geo3', name: 'Окружность', icon: 'radio_button_unchecked', color: '#DB2777', desc: 'Длина, площадь' },
+  { id: 'geo4', name: 'Координаты', icon: 'grid_on', color: '#16A34A', desc: 'Система координат' },
+  { id: 'geo5', name: 'Площади', icon: 'crop_square', color: '#EA580C', desc: 'Площади фигур' },
+  { id: 'geo6', name: 'Теорема Пифагора', icon: 'architecture', color: '#9333EA', desc: 'a² + b² = c²' },
+];
+const ALL_TOPICS = [...ALGEBRA_TOPICS, ...GEOMETRY_TOPICS];
+
+const PROBLEMS_DB = {
+  alg1: [
+    { id:'a1_1',q:'Реши уравнение: 2x + 6 = 14',opts:['x = 3','x = 4','x = 5','x = 10'],ans:1,hint:'Перенеси 6 в правую часть: 2x = 14 − 6 = 8, затем x = 8 ÷ 2',pts:10,diff:1},
+    { id:'a1_2',q:'Реши уравнение: 3x − 9 = 0',opts:['x = 0','x = 3','x = 9','x = −3'],ans:1,hint:'3x = 9, x = 3',pts:10,diff:1},
+    { id:'a1_3',q:'Реши уравнение: 5x + 3 = 28',opts:['x = 4','x = 5','x = 6','x = 7'],ans:1,hint:'5x = 25, x = 5',pts:10,diff:1},
+    { id:'a1_4',q:'Реши уравнение: 4x − 7 = 13',opts:['x = 4','x = 5','x = 6','x = 3'],ans:1,hint:'4x = 20, x = 5',pts:15,diff:2},
+    { id:'a1_5',q:'Реши уравнение: 7x + 2 = 5x + 10',opts:['x = 2','x = 3','x = 4','x = 6'],ans:2,hint:'2x = 8, x = 4',pts:20,diff:2},
+    { id:'a1_6',q:'Реши уравнение: 2(x − 3) = 4',opts:['x = 5','x = 7','x = 3','x = 1'],ans:0,hint:'2x − 6 = 4, 2x = 10, x = 5',pts:20,diff:2},
+    { id:'a1_7',q:'Найди x: 3(2x − 1) = 15',opts:['x = 2','x = 3','x = 4','x = 5'],ans:1,hint:'6x − 3 = 15, 6x = 18, x = 3',pts:25,diff:3},
+    { id:'a1_8',q:'Реши уравнение: (x + 4)/2 = 7',opts:['x = 6','x = 8','x = 10','x = 14'],ans:2,hint:'x + 4 = 14, x = 10',pts:25,diff:3},
+  ],
+  alg2: [
+    { id:'a2_1',q:'Реши неравенство: x + 3 > 7',opts:['x > 4','x > 10','x < 4','x > 3'],ans:0,hint:'x > 7 − 3 = 4',pts:10,diff:1},
+    { id:'a2_2',q:'Реши неравенство: 2x − 4 ≥ 6',opts:['x ≥ 1','x ≥ 5','x ≤ 5','x ≥ 4'],ans:1,hint:'2x ≥ 10, x ≥ 5',pts:15,diff:2},
+    { id:'a2_3',q:'Реши неравенство: 3x < 12',opts:['x < 3','x < 4','x > 4','x < 9'],ans:1,hint:'x < 12/3 = 4',pts:10,diff:1},
+    { id:'a2_4',q:'Реши неравенство: −2x > 8',opts:['x > −4','x < −4','x > 4','x < 4'],ans:1,hint:'При делении на отрицательное число знак меняется! x < −4',pts:20,diff:2},
+    { id:'a2_5',q:'Реши неравенство: 5 − x ≤ 2',opts:['x ≤ 3','x ≥ 3','x ≤ −3','x ≥ 7'],ans:1,hint:'−x ≤ −3, x ≥ 3',pts:20,diff:2},
+    { id:'a2_6',q:'Реши неравенство: 4x + 1 > 2x + 9',opts:['x > 3','x > 4','x < 4','x > 5'],ans:1,hint:'2x > 8, x > 4',pts:25,diff:3},
+  ],
+  alg3: [
+    { id:'a3_1',q:'Упрости: 3x² + 2x − x² + 5x',opts:['2x² + 7x','4x² + 3x','2x² + 3x','3x² + 7x'],ans:0,hint:'(3−1)x² + (2+5)x = 2x² + 7x',pts:15,diff:2},
+    { id:'a3_2',q:'Вычисли: 2³ × 2²',opts:['4⁶','2⁵','2⁶','4⁵'],ans:1,hint:'При умножении степеней с одинаковым основанием степени складываются: 2^(3+2) = 2⁵',pts:15,diff:2},
+    { id:'a3_3',q:'Раскрой скобки: (x + 3)(x − 3)',opts:['x² − 9','x² + 9','x² − 6x − 9','x² + 6x − 9'],ans:0,hint:'Формула разности квадратов: (a+b)(a−b) = a² − b²',pts:20,diff:2},
+    { id:'a3_4',q:'Упрости: (2x)³',opts:['2x³','6x³','8x³','8x'],ans:2,hint:'(2x)³ = 2³ · x³ = 8x³',pts:20,diff:2},
+    { id:'a3_5',q:'Раскрой скобки: (x + 5)²',opts:['x² + 25','x² + 5x + 25','x² + 10x + 25','x² + 10x'],ans:2,hint:'(a+b)² = a² + 2ab + b²',pts:25,diff:3},
+  ],
+  alg4: [
+    { id:'a4_1',q:'Если a/b = 3/4 и a = 9, найди b',opts:['b = 10','b = 12','b = 8','b = 15'],ans:1,hint:'Из пропорции: b = (9 × 4)/3 = 12',pts:15,diff:2},
+    { id:'a4_2',q:'Сократи дробь: 24/36',opts:['4/6','2/3','6/9','12/18'],ans:1,hint:'НОД(24,36) = 12. 24/12 = 2, 36/12 = 3',pts:10,diff:1},
+    { id:'a4_3',q:'Вычисли: 3/4 + 1/6',opts:['4/10','11/12','5/12','7/12'],ans:1,hint:'НОК(4,6)=12. 9/12 + 2/12 = 11/12',pts:15,diff:2},
+    { id:'a4_4',q:'Реши пропорцию: 5/x = 25/60',opts:['x = 10','x = 12','x = 15','x = 20'],ans:1,hint:'x = (5 × 60)/25 = 300/25 = 12',pts:20,diff:2},
+    { id:'a4_5',q:'Вычисли: 2/3 × 9/4',opts:['18/12','3/2','6/7','8/9'],ans:1,hint:'(2×9)/(3×4) = 18/12 = 3/2',pts:15,diff:2},
+  ],
+  alg5: [
+    { id:'a5_1',q:'Найди 20% от числа 80',opts:['8','16','20','40'],ans:1,hint:'80 × 0.20 = 16',pts:10,diff:1},
+    { id:'a5_2',q:'Число 30 составляет 25% от какого числа?',opts:['75','100','120','150'],ans:2,hint:'x = 30/0.25 = 120',pts:15,diff:2},
+    { id:'a5_3',q:'На сколько процентов 75 больше 50?',opts:['25%','33%','50%','75%'],ans:2,hint:'(75−50)/50 × 100 = 50%',pts:20,diff:2},
+    { id:'a5_4',q:'Цена снижена с 500 до 400 руб. На сколько процентов?',opts:['10%','15%','20%','25%'],ans:2,hint:'(500−400)/500 × 100 = 20%',pts:20,diff:2},
+    { id:'a5_5',q:'Найди 15% от числа 200',opts:['20','25','30','35'],ans:2,hint:'200 × 0.15 = 30',pts:10,diff:1},
+  ],
+  alg6: [
+    { id:'a6_1',q:'Для функции y = 2x + 1, найди y при x = 3',opts:['5','6','7','8'],ans:2,hint:'y = 2×3 + 1 = 7',pts:10,diff:1},
+    { id:'a6_2',q:'Каков угловой коэффициент функции y = −3x + 5?',opts:['5','3','−3','−5'],ans:2,hint:'В y = kx + b, k — угловой коэффициент',pts:10,diff:1},
+    { id:'a6_3',q:'При каком x функция y = 4x − 8 равна нулю?',opts:['x = 2','x = 4','x = −2','x = 8'],ans:0,hint:'4x = 8, x = 2',pts:15,diff:2},
+    { id:'a6_4',q:'График функции y = kx + 2 проходит через (3, 8). Найди k',opts:['k = 1','k = 2','k = 3','k = 4'],ans:1,hint:'8 = 3k + 2, 3k = 6, k = 2',pts:25,diff:3},
+    { id:'a6_5',q:'Функции параллельны, если они имеют одинаковый:',opts:['Y-интерцепт','Угловой коэффициент','X-интерцепт','Оба коэффициента'],ans:1,hint:'Параллельные прямые имеют одинаковое k',pts:15,diff:2},
+  ],
+  geo1: [
+    { id:'g1_1',q:'Сумма углов треугольника равна:',opts:['90°','180°','270°','360°'],ans:1,hint:'Основной факт геометрии: сумма углов = 180°',pts:10,diff:1},
+    { id:'g1_2',q:'Равносторонний треугольник имеет каждый угол:',opts:['45°','60°','90°','120°'],ans:1,hint:'180° ÷ 3 = 60°',pts:10,diff:1},
+    { id:'g1_3',q:'В прямоугольном треугольнике один острый угол 35°. Другой острый угол:',opts:['35°','45°','55°','65°'],ans:2,hint:'90° − 35° = 55°',pts:15,diff:2},
+    { id:'g1_4',q:'Периметр равностороннего треугольника 24 см. Сторона равна:',opts:['4 см','6 см','8 см','12 см'],ans:2,hint:'P = 3a, a = 24/3 = 8',pts:10,diff:1},
+    { id:'g1_5',q:'Два угла треугольника равны 70° и 50°. Третий угол:',opts:['40°','50°','60°','70°'],ans:2,hint:'180° − 70° − 50° = 60°',pts:15,diff:2},
+    { id:'g1_6',q:'Площадь треугольника с основанием 8 и высотой 6:',opts:['24','48','14','28'],ans:0,hint:'S = (1/2) × b × h = (1/2) × 8 × 6 = 24',pts:20,diff:2},
+  ],
+  geo2: [
+    { id:'g2_1',q:'Вертикальные углы:',opts:['Смежные','Равные','Дополнительные','Перпендикулярные'],ans:1,hint:'Вертикальные углы всегда равны',pts:10,diff:1},
+    { id:'g2_2',q:'Смежные углы в сумме дают:',opts:['90°','180°','270°','360°'],ans:1,hint:'Смежные углы образуют прямую линию = 180°',pts:10,diff:1},
+    { id:'g2_3',q:'Угол равен 65°. Его смежный угол:',opts:['25°','65°','115°','125°'],ans:2,hint:'180° − 65° = 115°',pts:10,diff:1},
+    { id:'g2_4',q:'Прямой угол равен:',opts:['45°','60°','90°','180°'],ans:2,hint:'Прямой угол = 90° по определению',pts:5,diff:1},
+    { id:'g2_5',q:'Параллельные прямые пересекает секущая. Накрест лежащие углы:',opts:['Смежные','Равные','90°','Дополнительные'],ans:1,hint:'Накрест лежащие углы при параллельных прямых равны',pts:20,diff:2},
+    { id:'g2_6',q:'Угол α = 40°. Чему равен дополнительный до 90° угол?',opts:['50°','40°','140°','60°'],ans:0,hint:'90° − 40° = 50°',pts:15,diff:2},
+  ],
+  geo3: [
+    { id:'g3_1',q:'Длина окружности с радиусом 7 (π ≈ 3.14):',opts:['21.98','43.96','153.86','78.5'],ans:1,hint:'C = 2πr = 2 × 3.14 × 7 = 43.96',pts:15,diff:2},
+    { id:'g3_2',q:'Площадь круга с радиусом 5 (π ≈ 3.14):',opts:['31.4','78.5','157','15.7'],ans:1,hint:'S = πr² = 3.14 × 25 = 78.5',pts:15,diff:2},
+    { id:'g3_3',q:'Диаметр окружности равен 12. Радиус равен:',opts:['6','12','24','144'],ans:0,hint:'r = d/2 = 6',pts:10,diff:1},
+    { id:'g3_4',q:'Хорда, проходящая через центр окружности — это:',opts:['Радиус','Дуга','Диаметр','Секущая'],ans:2,hint:'Диаметр = хорда через центр',pts:10,diff:1},
+    { id:'g3_5',q:'Длина окружности с диаметром 10 (π ≈ 3.14):',opts:['31.4','15.7','314','78.5'],ans:0,hint:'C = πd = 3.14 × 10 = 31.4',pts:15,diff:2},
+  ],
+  geo4: [
+    { id:'g4_1',q:'Расстояние от точки A(3, 4) до начала координат:',opts:['7','5','12','25'],ans:1,hint:'d = √(3² + 4²) = √25 = 5',pts:20,diff:2},
+    { id:'g4_2',q:'В какой четверти точка (−2, 3)?',opts:['I','II','III','IV'],ans:1,hint:'x < 0, y > 0 → II четверть',pts:10,diff:1},
+    { id:'g4_3',q:'Середина отрезка A(2,4) и B(6,8):',opts:['(4, 6)','(3, 5)','(8, 12)','(4, 4)'],ans:0,hint:'M = ((2+6)/2, (4+8)/2) = (4, 6)',pts:20,diff:2},
+    { id:'g4_4',q:'Точка (0, 5) лежит:',opts:['В I четверти','На оси Ox','На оси Oy','В начале координат'],ans:2,hint:'x = 0, значит точка на оси Oy',pts:10,diff:1},
+    { id:'g4_5',q:'Расстояние между точками A(1,1) и B(4,5):',opts:['3','4','5','6'],ans:2,hint:'d = √((4−1)² + (5−1)²) = √(9+16) = √25 = 5',pts:25,diff:3},
+  ],
+  geo5: [
+    { id:'g5_1',q:'Площадь прямоугольника со сторонами 8 и 5:',opts:['13','26','40','80'],ans:2,hint:'S = a × b = 8 × 5 = 40',pts:10,diff:1},
+    { id:'g5_2',q:'Площадь квадрата со стороной 7:',opts:['14','28','49','21'],ans:2,hint:'S = a² = 7² = 49',pts:10,diff:1},
+    { id:'g5_3',q:'Площадь трапеции с основаниями 6 и 10, высотой 4:',opts:['32','40','64','16'],ans:0,hint:'S = (a+b)/2 × h = (6+10)/2 × 4 = 32',pts:20,diff:2},
+    { id:'g5_4',q:'Площадь параллелограмма с основанием 9 и высотой 6:',opts:['30','54','15','27'],ans:1,hint:'S = b × h = 9 × 6 = 54',pts:15,diff:2},
+    { id:'g5_5',q:'Периметр прямоугольника 5 × 12:',opts:['34','60','17','24'],ans:0,hint:'P = 2(a+b) = 2(5+12) = 34',pts:10,diff:1},
+  ],
+  geo6: [
+    { id:'g6_1',q:'В прямоугольном треугольнике катеты 3 и 4. Гипотенуза:',opts:['5','7','6','9'],ans:0,hint:'c² = 3² + 4² = 9 + 16 = 25, c = 5',pts:15,diff:2},
+    { id:'g6_2',q:'Гипотенуза 13, один катет 5. Другой катет:',opts:['8','10','12','11'],ans:2,hint:'b² = 13² − 5² = 169 − 25 = 144, b = 12',pts:20,diff:2},
+    { id:'g6_3',q:'Теорема Пифагора: a² + b² = ?',opts:['c','c/2','c²','2c'],ans:2,hint:'a² + b² = c², где c — гипотенуза',pts:10,diff:1},
+    { id:'g6_4',q:'Катеты 6 и 8. Площадь треугольника:',opts:['24','48','14','28'],ans:0,hint:'S = (1/2) × a × b = (1/2) × 6 × 8 = 24',pts:20,diff:2},
+    { id:'g6_5',q:'Диагональ квадрата со стороной 5:',opts:['5','5√2 ≈ 7.07','10','25'],ans:1,hint:'d² = 5² + 5² = 50, d = 5√2',pts:25,diff:3},
+    { id:'g6_6',q:'Является ли треугольник с катетами 5, 12, 13 прямоугольным?',opts:['Да, т.к. 5²+12²=13²','Нет','Только если острый','Нельзя определить'],ans:0,hint:'25 + 144 = 169 = 13². Да!',pts:25,diff:3},
+  ],
+};
+
+const ACHIEVEMENTS = [
+  { id:'ach1', name:'Первый шаг', desc:'Ответь на первый вопрос правильно', icon:'star', color:'#F59E0B', req:{type:'correct',count:1}, pts:10 },
+  { id:'ach2', name:'Начинающий алгебраист', desc:'Реши 5 задач по алгебре', icon:'school', color:'#7C3AED', req:{type:'topic_correct',topic:'alg',count:5}, pts:25 },
+  { id:'ach3', name:'Геометр', desc:'Реши 5 задач по геометрии', icon:'architecture', color:'#2563EB', req:{type:'topic_correct',topic:'geo',count:5}, pts:25 },
+  { id:'ach4', name:'Математик 50', desc:'Набери 50 очков', icon:'emoji_events', color:'#D97706', req:{type:'points',count:50}, pts:20 },
+  { id:'ach5', name:'Математик 200', desc:'Набери 200 очков', icon:'emoji_events', color:'#F59E0B', req:{type:'points',count:200}, pts:40 },
+  { id:'ach6', name:'Серия x5', desc:'5 правильных ответов подряд', icon:'local_fire_department', color:'#EF4444', req:{type:'streak',count:5}, pts:30 },
+  { id:'ach7', name:'Пифагор', desc:'Реши все задачи по теореме Пифагора', icon:'change_history', color:'#9333EA', req:{type:'topic_all',topic:'geo6'}, pts:50 },
+  { id:'ach8', name:'Алгебраик Про', desc:'Реши 15 задач по алгебре', icon:'auto_awesome', color:'#7C3AED', req:{type:'topic_correct',topic:'alg',count:15}, pts:50 },
+  { id:'ach9', name:'Мастер математики', desc:'Набери 500 очков', icon:'military_tech', color:'#EAB308', req:{type:'points',count:500}, pts:100 },
+  { id:'ach10', name:'Всесторонний', desc:'Реши задачи по всем темам', icon:'all_inclusive', color:'#10B981', req:{type:'all_topics'}, pts:75 },
+];
+
+const LESSONS = {
+  alg1: { title:'Линейные уравнения', steps:[
+    {type:'theory',text:'Линейное уравнение — это уравнение вида ax + b = c, где a ≠ 0.'},
+    {type:'example',text:'Пример: 2x + 6 = 14\n→ 2x = 14 − 6 = 8\n→ x = 8 ÷ 2 = 4\n✓ Ответ: x = 4'},
+    {type:'rule',text:'📌 Правило: Что делаем с одной стороной уравнения, делаем и с другой!'},
+    {type:'example',text:'Пример: 3(x − 2) = 9\n→ 3x − 6 = 9\n→ 3x = 15\n→ x = 5\n✓ Ответ: x = 5'},
+    {type:'tip',text:'💡 Алгоритм:\n1. Раскрой скобки\n2. Перенеси x влево\n3. Числа — вправо\n4. Раздели на коэффициент при x'},
+  ]},
+  alg2: { title:'Неравенства', steps:[
+    {type:'theory',text:'Линейное неравенство: ax + b > c (или <, ≥, ≤).'},
+    {type:'example',text:'Пример: 2x − 4 > 6\n→ 2x > 10\n→ x > 5\n✓ Ответ: x ∈ (5; +∞)'},
+    {type:'rule',text:'⚠️ Важно: При умножении/делении на ОТРИЦАТЕЛЬНОЕ число знак неравенства МЕНЯЕТСЯ!'},
+    {type:'example',text:'Пример: −3x < 9\n→ x > −3 (знак изменился!)\n✓ Ответ: x ∈ (−3; +∞)'},
+  ]},
+  alg3: { title:'Многочлены', steps:[
+    {type:'theory',text:'Многочлен — сумма одночленов. Степень — наибольшая степень переменной.'},
+    {type:'example',text:'Формулы сокращённого умножения:\n(a+b)² = a² + 2ab + b²\n(a−b)² = a² − 2ab + b²\n(a+b)(a−b) = a² − b²'},
+    {type:'rule',text:'📌 Подобные слагаемые: ax^n + bx^n = (a+b)x^n'},
+    {type:'example',text:'Пример: 3x² + 2x − x² + 5x\n= (3−1)x² + (2+5)x\n= 2x² + 7x'},
+  ]},
+  alg4: { title:'Пропорции и дроби', steps:[
+    {type:'theory',text:'Пропорция: a/b = c/d. Главное свойство: ad = bc.'},
+    {type:'example',text:'Пример: x/12 = 5/20\n→ 20x = 60\n→ x = 3'},
+    {type:'rule',text:'📌 Дроби складываем только с одинаковым знаменателем! Найди НОК.'},
+    {type:'example',text:'Пример: 1/4 + 1/6\nНОК = 12\n= 3/12 + 2/12 = 5/12'},
+  ]},
+  alg5: { title:'Проценты', steps:[
+    {type:'theory',text:'Процент — сотая часть числа. 1% = 0.01 = 1/100.'},
+    {type:'example',text:'Найти p% от числа N:\nРезультат = N × p/100\n\nПример: 20% от 80 = 80 × 0.2 = 16'},
+    {type:'rule',text:'📌 Чтобы найти, сколько % A составляет от B:\n(A/B) × 100%'},
+    {type:'example',text:'Пример: 30 — это сколько % от 120?\n(30/120) × 100 = 25%'},
+  ]},
+  alg6: { title:'Функции и графики', steps:[
+    {type:'theory',text:'Линейная функция: y = kx + b\nk — угловой коэффициент (наклон)\nb — точка пересечения с осью Y'},
+    {type:'example',text:'Пример: y = 2x + 3\nПри x=0: y=3 (точка (0,3))\nПри x=1: y=5 (точка (1,5))'},
+    {type:'rule',text:'📌 Если k > 0 — прямая возрастающая\nЕсли k < 0 — прямая убывающая\nПараллельные прямые имеют одинаковое k!'},
+  ]},
+  geo1: { title:'Треугольники', steps:[
+    {type:'theory',text:'Сумма углов треугольника = 180°.\nВиды: прямоугольный (один угол 90°), тупоугольный, остроугольный.'},
+    {type:'example',text:'Равносторонний треугольник:\nВсе стороны равны\nВсе углы = 60°\nПериметр P = 3a'},
+    {type:'rule',text:'📌 Площадь треугольника:\nS = (1/2) × основание × высота\nS = (1/2) × b × h'},
+  ]},
+  geo2: { title:'Углы и параллельные прямые', steps:[
+    {type:'theory',text:'Вертикальные углы: образуются при пересечении двух прямых, равны между собой.'},
+    {type:'example',text:'Смежные углы в сумме = 180°\nЕсли угол = 70°, то смежный = 110°'},
+    {type:'rule',text:'📌 При параллельных прямых и секущей:\n• Накрест лежащие = равны\n• Односторонние = 180°\n• Соответственные = равны'},
+  ]},
+  geo3: { title:'Окружность и круг', steps:[
+    {type:'theory',text:'Окружность — множество точек, равноудалённых от центра на расстоянии r (радиус).'},
+    {type:'example',text:'Формулы:\nДлина окружности: C = 2πr = πd\nПлощадь круга: S = πr²\nπ ≈ 3.14159...'},
+    {type:'rule',text:'📌 Диаметр = 2 × радиус\nДиаметр — наибольшая хорда!'},
+  ]},
+  geo4: { title:'Система координат', steps:[
+    {type:'theory',text:'Точка на плоскости — пара (x, y). Оси: горизонтальная Ox, вертикальная Oy.'},
+    {type:'example',text:'Четверти:\nI: x>0, y>0\nII: x<0, y>0\nIII: x<0, y<0\nIV: x>0, y<0'},
+    {type:'rule',text:'📌 Расстояние между точками A(x₁,y₁) и B(x₂,y₂):\nd = √((x₂−x₁)² + (y₂−y₁)²)'},
+  ]},
+  geo5: { title:'Площади фигур', steps:[
+    {type:'theory',text:'Основные формулы площадей:'},
+    {type:'example',text:'Прямоугольник: S = a × b\nКвадрат: S = a²\nТреугольник: S = (1/2) × b × h\nПараллелограмм: S = b × h\nТрапеция: S = (a+b)/2 × h'},
+    {type:'rule',text:'📌 Все формулы нужно знать наизусть!\nЗапомни: в трапеции берём полусумму оснований.'},
+  ]},
+  geo6: { title:'Теорема Пифагора', steps:[
+    {type:'theory',text:'В прямоугольном треугольнике: a² + b² = c², где c — гипотенуза (напротив прямого угла).'},
+    {type:'example',text:'Катеты 3 и 4:\nc² = 9 + 16 = 25\nc = √25 = 5\n✓ Тройка Пифагора: (3,4,5)!'},
+    {type:'rule',text:'📌 Тройки Пифагора (запомни!):\n3, 4, 5\n5, 12, 13\n8, 15, 17\n7, 24, 25'},
+    {type:'example',text:'Нахождение катета:\nЕсли c=10, a=6:\nb² = c² − a² = 100 − 36 = 64\nb = 8'},
+  ]},
+};
+
+// ============== STATE ==============
+let state = {
+  totalPoints: 0,
+  attempts: [], // {problem_id, topic_id, correct}
+  unlockedAchs: [],
+  streak: 0,
+  bestStreak: 0,
+};
+
+// Load from localStorage
+try {
+  const saved = localStorage.getItem('mathquest_state');
+  if (saved) state = {...state, ...JSON.parse(saved)};
+} catch(e) {}
+
+function saveState() {
+  try { localStorage.setItem('mathquest_state', JSON.stringify(state)); } catch(e) {}
+}
+
+// ============== HELPERS ==============
+function getLevel(pts) {
+  if (pts < 50) return 1;
+  if (pts < 150) return 2;
+  if (pts < 300) return 3;
+  if (pts < 500) return 4;
+  if (pts < 750) return 5;
+  if (pts < 1100) return 6;
+  if (pts < 1500) return 7;
+  if (pts < 2000) return 8;
+  if (pts < 2700) return 9;
+  return 10;
+}
+function getLevelTitle(l) {
+  return ['','Новичок','Ученик','Знаток','Исследователь','Мастер','Эксперт','Профессор','Академик','Гений','Легенда'][l]||'Легенда';
+}
+function getLevelColor(l) {
+  if (l<=2) return '#6B7280';
+  if (l<=4) return '#2563EB';
+  if (l<=6) return '#7C3AED';
+  if (l<=8) return '#D97706';
+  return '#EAB308';
+}
+function getLevelEnd(l) {
+  return [50,50,150,300,500,750,1100,1500,2000,2700,3500][l]||3500;
+}
+function getLevelStart(l) {
+  return [0,0,50,150,300,500,750,1100,1500,2000,2700][l]||0;
+}
+function getDiffLabel(d) { return d===1?'Лёгкий':d===2?'Средний':'Сложный'; }
+function getDiffColor(d) { return d===1?'#10B981':d===2?'#F59E0B':'#EF4444'; }
+function getTopic(id) { return ALL_TOPICS.find(t=>t.id===id)||ALL_TOPICS[0]; }
+function solvedInTopic(tid) {
+  const ids = new Set(state.attempts.filter(a=>a.correct&&a.topic_id===tid).map(a=>a.problem_id));
+  return ids.size;
+}
+function totalInTopic(tid) { return (PROBLEMS_DB[tid]||[]).length; }
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-0.5); }
+function getRandomProblems(tid, n) { return shuffle(PROBLEMS_DB[tid]||[]).slice(0,n); }
+
+// ============== ACHIEVEMENT CHECK ==============
+function checkAchievements() {
+  const newAchs = [];
+  const totalCorrect = state.attempts.filter(a=>a.correct).length;
+  const ALL_TOPIC_IDS = ALL_TOPICS.map(t=>t.id);
+
+  for (const ach of ACHIEVEMENTS) {
+    if (state.unlockedAchs.includes(ach.id)) continue;
+    const {req} = ach;
+    let unlock = false;
+    if (req.type==='correct' && totalCorrect>=req.count) unlock=true;
+    if (req.type==='points' && state.totalPoints>=req.count) unlock=true;
+    if (req.type==='streak' && state.streak>=req.count) unlock=true;
+    if (req.type==='topic_correct') {
+      const cnt = state.attempts.filter(a=>a.correct&&a.topic_id&&a.topic_id.startsWith(req.topic)).length;
+      if (cnt>=req.count) unlock=true;
+    }
+    if (req.type==='topic_all') {
+      const allIds = new Set((PROBLEMS_DB[req.topic]||[]).map(p=>p.id));
+      const solvedIds = new Set(state.attempts.filter(a=>a.correct&&a.topic_id===req.topic).map(a=>a.problem_id));
+      if ([...allIds].every(id=>solvedIds.has(id))) unlock=true;
+    }
+    if (req.type==='all_topics') {
+      if (ALL_TOPIC_IDS.every(tid=>state.attempts.some(a=>a.correct&&a.topic_id===tid))) unlock=true;
+    }
+    if (unlock) {
+      state.unlockedAchs.push(ach.id);
+      state.totalPoints += ach.pts;
+      newAchs.push(ach);
+    }
+  }
+  return newAchs;
+}
+
+// ============== XP BAR ==============
+function renderXpBar(pts, container) {
+  const level = getLevel(pts);
+  const levelStart = getLevelStart(level);
+  const levelEnd = getLevelEnd(level);
+  const progress = levelEnd > levelStart ? Math.min((pts - levelStart) / (levelEnd - levelStart), 1) : 1;
+  const color = getLevelColor(level);
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+      <span style="color:var(--TEXT2);font-size:12px;">Уровень ${level} · ${getLevelTitle(level)}</span>
+      <span style="color:var(--TEXT3);font-size:11px;">${pts} / ${levelEnd} XP</span>
+    </div>
+    <div style="height:8px;background:var(--BORDER);border-radius:4px;overflow:hidden;">
+      <div style="height:8px;width:${(progress*100).toFixed(1)}%;background:${color};border-radius:4px;transition:width 0.6s ease;"></div>
+    </div>`;
+}
+
+// ============== ACHIEVEMENT BADGE ==============
+function achBadgeHTML(ach, unlocked, size='small') {
+  const w = size==='small'?44:56, r = w/2;
+  const bg = unlocked ? ach.color+'22' : 'var(--CARD2)';
+  const border = unlocked ? ach.color : 'var(--BORDER)';
+  const icolor = unlocked ? ach.color : 'var(--TEXT3)';
+  return `<div class="ach-badge ${unlocked?'unlocked':'locked'}">
+    <div class="ach-icon-wrap" style="width:${w}px;height:${w}px;border-radius:${r}px;background:${bg};border-color:${border};">
+      <span class="material-icons" style="font-size:${size==='small'?22:28}px;color:${icolor};">${ach.icon}</span>
+    </div>
+    <div class="ach-badge-name">${ach.name}</div>
+  </div>`;
+}
+
+// ============== TAB NAVIGATION ==============
+let currentScreen = 'home';
+let previousScreen = null;
+
+function switchTab(tab) {
+  // Only switch if it's a main tab
+  const tabs = ['home','topics','learn','progress'];
+  if (!tabs.includes(tab)) return;
+  
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  currentScreen = tab;
+
+  if (tab==='home') renderHome();
+  if (tab==='topics') renderTopics('alg');
+  if (tab==='learn') renderLearn('alg');
+  if (tab==='progress') renderProgress();
+}
+
+// ============== HOME ==============
+function renderHome() {
+  const pts = state.totalPoints;
+  const level = getLevel(pts);
+  const color = getLevelColor(level);
+  const totalCorrect = state.attempts.filter(a=>a.correct).length;
+
+  document.getElementById('home-points-pill').textContent = '⭐ ' + pts;
+
+  const badge = document.getElementById('home-level-badge');
+  badge.style.background = color+'33';
+  badge.style.borderColor = color;
+  badge.querySelector('span').style.color = color;
+  badge.querySelector('span').textContent = level;
+
+  document.getElementById('home-level-title').textContent = getLevelTitle(level);
+  document.getElementById('home-correct-count').textContent = totalCorrect + ' задач решено правильно';
+
+  renderXpBar(pts, document.getElementById('home-xp-bar'));
+
+  // Featured
+  const featured = [...ALGEBRA_TOPICS.slice(0,3), ...GEOMETRY_TOPICS.slice(0,3)];
+  document.getElementById('home-featured').innerHTML = featured.map(t => {
+    const solved = solvedInTopic(t.id), total = totalInTopic(t.id);
+    const pct = total>0?Math.round(solved/total*100):0;
+    return `<div class="feat-card" style="border:1px solid ${t.color}44;" onclick="openQuiz('${t.id}')">
+      <div style="width:40px;height:40px;border-radius:20px;background:${t.color}22;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+        <span class="material-icons" style="color:${t.color};font-size:22px;">${t.icon}</span>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--TEXT);line-height:1.3;">${t.name}</div>
+      <div style="font-size:11px;color:var(--TEXT3);margin-bottom:8px;">${t.desc}</div>
+      <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%;background:${t.color};"></div></div>
+      <div style="font-size:10px;color:var(--TEXT3);margin-top:4px;">${solved}/${total} решено</div>
+    </div>`;
+  }).join('');
+
+  // Achievements
+  document.getElementById('home-ach-count').textContent = state.unlockedAchs.length + ' из ' + ACHIEVEMENTS.length + ' получено';
+  document.getElementById('home-ach-list').innerHTML = ACHIEVEMENTS.slice(0,6).map(a =>
+    achBadgeHTML(a, state.unlockedAchs.includes(a.id), 'small')
+  ).join('');
+
+  // Topic lists
+  const renderTopicRow = (t) => {
+    const solved = solvedInTopic(t.id), total = totalInTopic(t.id);
+    const pct = total>0?solved/total*100:0;
+    return `<div class="topic-row" onclick="openQuiz('${t.id}')">
+      <div class="topic-icon" style="background:${t.color}22;">
+        <span class="material-icons" style="color:${t.color};font-size:22px;">${t.icon}</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--TEXT);">${t.name}</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct.toFixed(1)}%;background:${t.color};"></div></div>
+        <div style="font-size:11px;color:var(--TEXT3);margin-top:3px;">${solved}/${total} решено</div>
+      </div>
+      <span class="material-icons" style="color:${t.color};font-size:28px;">play_circle_outline</span>
+    </div>`;
+  };
+  document.getElementById('home-algebra-list').innerHTML = ALGEBRA_TOPICS.map(renderTopicRow).join('');
+  document.getElementById('home-geo-list').innerHTML = GEOMETRY_TOPICS.map(renderTopicRow).join('');
+}
+
+// ============== TOPICS ==============
+let topicsCat = 'alg';
+function setTopicsCat(cat, btn) {
+  topicsCat = cat;
+  document.querySelectorAll('#screen-topics .seg-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTopics(cat);
+}
+function renderTopics(cat) {
+  const topics = cat==='alg' ? ALGEBRA_TOPICS : GEOMETRY_TOPICS;
+  document.getElementById('topics-list').innerHTML = topics.map(t => {
+    const total = totalInTopic(t.id);
+    const easy = (PROBLEMS_DB[t.id]||[]).filter(p=>p.diff===1).length;
+    const med = (PROBLEMS_DB[t.id]||[]).filter(p=>p.diff===2).length;
+    const hard = (PROBLEMS_DB[t.id]||[]).filter(p=>p.diff===3).length;
+    return `<div class="quest-card" style="border-color:${t.color}55;">
+      <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50px;background:${t.color}0A;pointer-events:none;"></div>
+      <div class="flex-row gap-14 mb-14">
+        <div class="topic-icon" style="width:50px;height:50px;border-radius:25px;background:${t.color}22;">
+          <span class="material-icons" style="color:${t.color};font-size:26px;">${t.icon}</span>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:var(--TEXT);">${t.name}</div>
+          <div style="font-size:13px;color:var(--TEXT3);">${t.desc}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div style="flex:1;background:rgba(16,185,129,0.12);border-radius:10px;padding:10px;text-align:center;">
+          <div style="color:#10B981;font-size:16px;font-weight:800;">${easy}</div>
+          <div style="color:var(--TEXT3);font-size:10px;">Лёгких</div>
+        </div>
+        <div style="flex:1;background:rgba(245,158,11,0.12);border-radius:10px;padding:10px;text-align:center;">
+          <div style="color:#F59E0B;font-size:16px;font-weight:800;">${med}</div>
+          <div style="color:var(--TEXT3);font-size:10px;">Средних</div>
+        </div>
+        <div style="flex:1;background:rgba(239,68,68,0.12);border-radius:10px;padding:10px;text-align:center;">
+          <div style="color:#EF4444;font-size:16px;font-weight:800;">${hard}</div>
+          <div style="color:var(--TEXT3);font-size:10px;">Сложных</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="background:${t.color};" onclick="openQuiz('${t.id}')">
+        ▶ Начать квест · ${total} задач
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ============== LEARN ==============
+let learnCat = 'alg';
+function setLearnCat(cat, btn) {
+  learnCat = cat;
+  document.querySelectorAll('#screen-learn .seg-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLearn(cat);
+}
+function renderLearn(cat) {
+  const topics = cat==='alg' ? ALGEBRA_TOPICS : GEOMETRY_TOPICS;
+  document.getElementById('learn-list').innerHTML = topics.map(t => {
+    const lesson = LESSONS[t.id];
+    if (!lesson) return '';
+    const stepBadges = lesson.steps.map(s => {
+      const cfg = {
+        theory: {color:'var(--TEXT3)',label:'📝 Теория'},
+        example: {color:'#10B981',label:'📐 Пример'},
+        rule: {color:'#F59E0B',label:'📌 Правило'},
+        tip: {color:'var(--PRIMARY-LIGHT)',label:'💡 Совет'}
+      }[s.type]||{color:'var(--TEXT3)',label:'📝'};
+      return `<span style="background:${cfg.color}22;color:${cfg.color};font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;margin:0 4px 4px 0;display:inline-block;">${cfg.label}</span>`;
+    }).join('');
+    return `<div class="card" style="border-color:${t.color}44;cursor:pointer;" onclick="openLesson('${t.id}')">
+      <div class="flex-row gap-14 mb-10">
+        <div class="topic-icon" style="width:46px;height:46px;border-radius:23px;background:${t.color}22;">
+          <span class="material-icons" style="color:${t.color};font-size:24px;">${t.icon}</span>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:800;color:var(--TEXT);">${t.name}</div>
+          <div style="font-size:12px;color:var(--TEXT3);">${t.desc}</div>
+        </div>
+        <span class="material-icons" style="color:${t.color};font-size:22px;">menu_book</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;">${stepBadges}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============== PROGRESS ==============
+function renderProgress() {
+  const pts = state.totalPoints;
+  const level = getLevel(pts);
+  const color = getLevelColor(level);
+  const total = state.attempts.length;
+  const correct = state.attempts.filter(a=>a.correct).length;
+  const accuracy = total>0?Math.round(correct/total*100):0;
+
+  const xpBarHtml = `<div id="prog-xp"></div>`;
+
+  const topicRows = ALL_TOPICS.map(t => {
+    const solvedIds = new Set(state.attempts.filter(a=>a.correct&&a.topic_id===t.id).map(a=>a.problem_id));
+    const cnt = solvedIds.size;
+    const tot = totalInTopic(t.id);
+    const pct = tot>0?cnt/tot*100:0;
+    return `<div class="topic-row" style="cursor:default;">
+      <div class="topic-icon" style="width:36px;height:36px;border-radius:18px;background:${t.color}22;">
+        <span class="material-icons" style="color:${t.color};font-size:20px;">${t.icon}</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--TEXT);margin-bottom:4px;">${t.name}</div>
+        <div class="mini-bar-track" style="height:5px;"><div class="mini-bar-fill" style="height:5px;width:${pct.toFixed(1)}%;background:${t.color};"></div></div>
+      </div>
+      <span style="font-size:12px;color:var(--TEXT3);margin-left:10px;">${cnt}/${tot}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('progress-content').innerHTML = `
+    <div class="card mb-20">
+      <div class="flex-row gap-14 mb-14">
+        <div style="width:64px;height:64px;border-radius:32px;background:${color}33;border:3px solid ${color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span style="color:${color};font-size:26px;font-weight:900;">${level}</span>
+        </div>
+        <div>
+          <div style="font-size:20px;font-weight:900;color:var(--TEXT);">${getLevelTitle(level)}</div>
+          <div style="font-size:14px;color:var(--TEXT2);">${pts} XP всего</div>
+        </div>
+      </div>
+      ${xpBarHtml}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <div class="stat-box"><span style="color:#10B981;font-size:28px;font-weight:900;">${correct}</span><span style="font-size:12px;color:var(--TEXT3);">Правильно</span></div>
+      <div class="stat-box"><span style="color:var(--ACCENT);font-size:28px;font-weight:900;">${accuracy}%</span><span style="font-size:12px;color:var(--TEXT3);">Точность</span></div>
+      <div class="stat-box"><span style="color:#EF4444;font-size:28px;font-weight:900;">${state.bestStreak}</span><span style="font-size:12px;color:var(--TEXT3);">Лучшая серия</span></div>
+    </div>
+    <div class="card mb-20">
+      <div style="font-size:16px;font-weight:800;margin-bottom:14px;">🏅 Достижения (${state.unlockedAchs.length}/${ACHIEVEMENTS.length})</div>
+      <div style="display:flex;flex-wrap:wrap;">
+        ${ACHIEVEMENTS.map(a=>achBadgeHTML(a,state.unlockedAchs.includes(a.id),'normal')).join('')}
+      </div>
+    </div>
+    <div style="font-size:16px;font-weight:800;margin-bottom:12px;">📈 По темам</div>
+    ${topicRows}
+  `;
+
+  renderXpBar(pts, document.getElementById('prog-xp'));
+}
+
+// ============== QUIZ ==============
+let quizState = null;
+
+function openQuiz(topicId) {
+  const topic = getTopic(topicId);
+  const problems = getRandomProblems(topicId, 6);
+
+  quizState = {
+    topicId, topic, problems,
+    idx: 0, selected: null, answered: false,
+    score: 0, correctCount: 0, streak: 0,
+    finished: false, showHint: false, newAchs: []
+  };
+
+  previousScreen = currentScreen;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-quiz').classList.add('active');
+  currentScreen = 'quiz';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizState;
+  if (q.finished) { renderQuizFinish(); return; }
+  const prob = q.problems[q.idx];
+  if (!prob) return;
+
+  const progressPct = (q.idx / q.problems.length * 100).toFixed(1);
+  const topic = q.topic;
+
+  document.getElementById('quiz-header').innerHTML = `
+    <div class="flex-row gap-8 mb-14">
+      <button class="back-btn" onclick="goBack()"><span class="material-icons">arrow_back</span></button>
+      <div style="width:32px;height:32px;border-radius:16px;background:${topic.color}22;display:flex;align-items:center;justify-content:center;">
+        <span class="material-icons" style="color:${topic.color};font-size:18px;">${topic.icon}</span>
+      </div>
+      <span style="font-size:16px;font-weight:700;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${topic.name}</span>
+      <div class="xp-pill">+${q.score} XP</div>
+    </div>
+    <div class="flex-row gap-8">
+      <div style="flex:1;height:6px;background:var(--BORDER);border-radius:3px;overflow:hidden;">
+        <div style="height:6px;width:${progressPct}%;background:${topic.color};border-radius:3px;transition:width 0.3s;"></div>
+      </div>
+      <span style="font-size:12px;color:var(--TEXT3);">${q.idx+1}/${q.problems.length}</span>
+    </div>`;
+
+  const diffColor = getDiffColor(prob.diff);
+
+  let optionsHtml = prob.opts.map((opt, i) => {
+    let bg = 'var(--CARD)', border = 'var(--BORDER)', txtColor = 'var(--TEXT)';
+    let icon = '';
+    if (q.answered) {
+      if (i===prob.ans) { bg=`rgba(16,185,129,0.15)`;border='#10B981';txtColor='#10B981';icon='<span class="material-icons" style="color:#10B981;font-size:22px;">check_circle</span>'; }
+      else if (i===q.selected&&i!==prob.ans) { bg=`rgba(239,68,68,0.15)`;border='#EF4444';txtColor='#EF4444';icon='<span class="material-icons" style="color:#EF4444;font-size:22px;">cancel</span>'; }
+    }
+    const letterColor = q.answered&&i===prob.ans?'#10B981':q.answered&&i===q.selected?'#EF4444':'var(--TEXT3)';
+    return `<button class="quiz-option" style="background:${bg};border-color:${border};" 
+      ${q.answered?'disabled':''} onclick="handleQuizSelect(${i})">
+      <div class="opt-letter" style="background:${border}33;color:${letterColor};">${['A','B','C','D'][i]}</div>
+      <span style="color:${txtColor};font-size:15px;font-weight:600;flex:1;">${opt}</span>
+      ${icon}
+    </button>`;
+  }).join('');
+
+  let feedbackHtml = '';
+  if (q.answered) {
+    if (q.selected===prob.ans) {
+      feedbackHtml = `<div class="result-correct animate-pop">
+        <span style="font-size:24px;">🎉</span>
+        <div><div style="color:#10B981;font-size:15px;font-weight:800;">Правильно!</div>
+        <div style="color:var(--TEXT2);font-size:13px;">+${prob.pts} XP получено</div></div>
+      </div>`;
+    } else {
+      feedbackHtml = `<div class="result-wrong animate-shake">
+        <div style="color:#EF4444;font-size:15px;font-weight:800;margin-bottom:4px;">❌ Неверно</div>
+        <div style="color:var(--TEXT2);font-size:13px;">💡 ${prob.hint}</div>
+      </div>`;
+    }
+    const isLast = q.idx+1>=q.problems.length;
+    feedbackHtml += `<button class="btn btn-primary" onclick="handleQuizNext()">${isLast?'📊 Результаты':'Следующий вопрос →'}</button>`;
+  } else {
+    if (q.showHint) {
+      feedbackHtml = `<div class="hint-box">
+        <div style="color:var(--WARNING);font-size:14px;font-weight:700;margin-bottom:4px;">💡 Подсказка</div>
+        <div style="color:var(--TEXT2);font-size:14px;line-height:1.5;">${prob.hint}</div>
+      </div>`;
+    } else {
+      feedbackHtml = `<button class="btn" style="background:rgba(245,158,11,0.12);color:var(--WARNING);border:1px solid rgba(245,158,11,0.3);" onclick="showQuizHint()">💡 Показать подсказку</button>`;
+    }
+  }
+
+  document.getElementById('quiz-content').innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <span class="diff-badge" style="color:${diffColor};border-color:${diffColor}55;background:${diffColor}18;">${getDiffLabel(prob.diff)}</span>
+      <span class="diff-badge" style="color:var(--ACCENT);border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.15);">+${prob.pts} XP</span>
+    </div>
+    <div class="card mb-20 animate-slide">
+      <div style="font-size:18px;font-weight:700;line-height:1.5;">${prob.q}</div>
+    </div>
+    ${optionsHtml}
+    <div style="margin-top:8px;">${feedbackHtml}</div>
+    ${q.newAchs.length>0?`<div style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.4);border-radius:16px;padding:16px;margin-top:12px;">
+      <div style="color:var(--ACCENT);font-size:14px;font-weight:800;margin-bottom:8px;text-align:center;">🏅 Новые достижения!</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;">${q.newAchs.map(a=>achBadgeHTML(a,true,'normal')).join('')}</div>
+    </div>`:''}
+  `;
+}
+
+function handleQuizSelect(i) {
+  if (quizState.answered) return;
+  const prob = quizState.problems[quizState.idx];
+  quizState.selected = i;
+  quizState.answered = true;
+  quizState.showHint = false;
+
+  const isCorrect = i === prob.ans;
+  const pts = isCorrect ? prob.pts : 0;
+  quizState.score += pts;
+  if (isCorrect) {
+    quizState.correctCount++;
+    quizState.streak++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  } else {
+    quizState.streak = 0;
+    state.streak = 0;
+  }
+
+  state.totalPoints += pts;
+  state.attempts.push({ problem_id: prob.id, topic_id: quizState.topicId, correct: isCorrect });
+
+  const newAchs = checkAchievements();
+  quizState.newAchs = newAchs;
+  saveState();
+  renderQuiz();
+}
+
+function handleQuizNext() {
+  quizState.newAchs = [];
+  quizState.selected = null;
+  quizState.answered = false;
+  quizState.showHint = false;
+  if (quizState.idx+1>=quizState.problems.length) {
+    quizState.finished = true;
+  } else {
+    quizState.idx++;
+  }
+  renderQuiz();
+}
+
+function showQuizHint() {
+  quizState.showHint = true;
+  renderQuiz();
+}
+
+function renderQuizFinish() {
+  const q = quizState;
+  const emoji = q.correctCount > q.problems.length*0.7 ? '🏆' : q.correctCount > q.problems.length*0.4 ? '🎯' : '💪';
+  const title = q.correctCount > q.problems.length*0.7 ? 'Отлично!' : 'Хорошая попытка!';
+
+  const achHtml = q.newAchs.length>0 ? `
+    <div style="width:100%;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.4);border-radius:16px;padding:16px;margin-bottom:20px;">
+      <div style="color:var(--ACCENT);font-size:16px;font-weight:800;margin-bottom:10px;text-align:center;">🏅 Новые достижения!</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;">${q.newAchs.map(a=>achBadgeHTML(a,true,'normal')).join('')}</div>
+    </div>` : '';
+
+  document.getElementById('quiz-content').innerHTML = `
+    <div class="finish-screen animate-slide">
+      <div style="font-size:60px;margin-bottom:10px;">${emoji}</div>
+      <div style="font-size:26px;font-weight:900;margin-bottom:6px;">${title}</div>
+      <div style="color:var(--TEXT2);font-size:16px;margin-bottom:30px;">Квест завершён</div>
+      <div class="card" style="width:100%;align-items:center;margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-around;width:100%;margin-bottom:16px;">
+          <div style="text-align:center;">
+            <div style="color:var(--ACCENT);font-size:36px;font-weight:900;">${q.score}</div>
+            <div style="color:var(--TEXT3);font-size:12px;">Очков</div>
+          </div>
+          <div style="width:1px;background:var(--BORDER);"></div>
+          <div style="text-align:center;">
+            <div style="color:#10B981;font-size:36px;font-weight:900;">${q.correctCount}/${q.problems.length}</div>
+            <div style="color:var(--TEXT3);font-size:12px;">Правильно</div>
+          </div>
+          <div style="width:1px;background:var(--BORDER);"></div>
+          <div style="text-align:center;">
+            <div style="color:var(--PRIMARY-LIGHT);font-size:36px;font-weight:900;">${q.streak}</div>
+            <div style="color:var(--TEXT3);font-size:12px;">Серия</div>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--BORDER);width:100%;margin-bottom:14px;"></div>
+        <div style="color:var(--TEXT2);font-size:14px;">Тема: ${q.topic.name}</div>
+      </div>
+      ${achHtml}
+      <button class="btn btn-primary mb-10" style="margin-bottom:12px;" onclick="openQuiz('${q.topicId}')">🔄 Играть ещё</button>
+      <button class="btn btn-secondary" onclick="goBack()">🏠 Главная</button>
+    </div>`;
+  document.getElementById('quiz-header').innerHTML = '';
+}
+
+// ============== LESSON ==============
+function openLesson(topicId) {
+  const topic = getTopic(topicId);
+  const lesson = LESSONS[topicId]||{title:'Урок',steps:[]};
+
+  previousScreen = currentScreen;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-lesson').classList.add('active');
+  currentScreen = 'lesson';
+
+  document.getElementById('lesson-header').innerHTML = `
+    <div class="flex-row gap-8">
+      <button class="back-btn" onclick="goBack()"><span class="material-icons">arrow_back</span></button>
+      <div style="width:36px;height:36px;border-radius:18px;background:${topic.color}22;display:flex;align-items:center;justify-content:center;">
+        <span class="material-icons" style="color:${topic.color};font-size:20px;">${topic.icon}</span>
+      </div>
+      <span style="font-size:17px;font-weight:800;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${lesson.title}</span>
+    </div>`;
+
+  const stepHtml = lesson.steps.map(s => {
+    const cfg = {
+      theory: {border:'var(--BORDER)',header:'var(--TEXT3)',label:'📝 Теория'},
+      example: {border:'rgba(16,185,129,0.5)',header:'#10B981',label:'📐 Пример'},
+      rule: {border:'rgba(245,158,11,0.5)',header:'#F59E0B',label:'📌 Правило'},
+      tip: {border:'rgba(124,58,237,0.5)',header:'var(--PRIMARY-LIGHT)',label:'💡 Совет'},
+    }[s.type]||{border:'var(--BORDER)',header:'var(--TEXT3)',label:'📝'};
+    return `<div class="lesson-step" style="border-left-color:${cfg.border};">
+      <div style="color:${cfg.header};font-size:13px;font-weight:800;margin-bottom:8px;">${cfg.label}</div>
+      <div class="mono" style="color:var(--TEXT);font-size:15px;line-height:1.6;white-space:pre-wrap;">${s.text}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('lesson-content').innerHTML = `
+    ${stepHtml}
+    <button class="btn" style="background:${topic.color};color:#fff;margin-top:10px;" onclick="openQuiz('${topicId}')">⚡ Проверить знания!</button>`;
+}
+
+// ============== BACK ==============
+function goBack() {
+  const prev = previousScreen || 'home';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  
+  if (['home','topics','learn','progress'].includes(prev)) {
+    document.getElementById('screen-'+prev).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+prev).classList.add('active');
+    currentScreen = prev;
+    if (prev==='home') renderHome();
+    if (prev==='topics') renderTopics(topicsCat);
+    if (prev==='learn') renderLearn(learnCat);
+    if (prev==='progress') renderProgress();
+  } else {
+    document.getElementById('screen-home').classList.add('active');
+    document.getElementById('tab-home').classList.add('active');
+    currentScreen = 'home';
+    renderHome();
+  }
+  previousScreen = null;
+}
+
+// ============== INIT ==============
+renderHome();
+renderTopics('alg');
+renderLearn('alg');
+</script>
+</body>
+</html>
